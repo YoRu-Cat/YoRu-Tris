@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include <cmath>
 #include "YoRuSplScr.h"
+#include "Grid.h"
 
 int main()
 {
@@ -13,37 +14,38 @@ int main()
 	SetTargetFPS(60);
 
 	SplashScreen splash("resources/YoRu_n.gif", 10, 6.0f, 10.0f);
-
+	Color dBlu = {44, 44, 127, 255};
+	Grid grid = Grid();
 	// Main game loop
 	while (!WindowShouldClose())
 	{
 		float deltaTime = GetFrameTime();
 
 		// Handle window resizing
-		if (IsWindowResized())
-		{
-			splash.AdjustToScreenSize();
-		}
+		// if (IsWindowResized())
+		// {
+		// 	splash.AdjustToScreenSize();
+		// }
 
 		// Handle keyboard input
-		if (IsKeyPressed(KEY_RIGHT))
-			splash.SetFramesPerSecond(20.0f);
-		else if (IsKeyPressed(KEY_LEFT))
-			splash.SetFramesPerSecond(10.0f);
+		// if (IsKeyPressed(KEY_RIGHT))
+		// 	splash.SetFramesPerSecond(20.0f);
+		// else if (IsKeyPressed(KEY_LEFT))
+		// 	splash.SetFramesPerSecond(10.0f);
 
-		if (IsKeyPressed(KEY_F11) || IsKeyPressed(KEY_ESCAPE))
-		{
-			if (IsWindowFullscreen())
-			{
-				ToggleFullscreen();
-				SetWindowSize(displayWidth / 2, displayHeight / 2);
-			}
-			else
-			{
-				ToggleFullscreen();
-			}
-			splash.AdjustToScreenSize();
-		}
+		// if (IsKeyPressed(KEY_F11) || IsKeyPressed(KEY_ESCAPE))
+		// {
+		// 	if (IsWindowFullscreen())
+		// 	{
+		// 		ToggleFullscreen();
+		// 		SetWindowSize(displayWidth / 2, displayHeight / 2);
+		// 	}
+		// 	else
+		// 	{
+		// 		ToggleFullscreen();
+		// 	}
+		// 	splash.AdjustToScreenSize();
+		// }
 
 		// Update splash screen
 		if (splash.Update(deltaTime))
@@ -74,28 +76,29 @@ int main()
 		}
 		else if (check)
 		{
-			ClearBackground(BLACK);
+			ClearBackground(dBlu);
+			grid.Draw();
 			// Draw large "COMING SOON" text centered on screen
-			const char *message = "COMING SOON";
-			const char *sub = "A Project by YoRu";
+			// const char *message = "COMING SOON";
+			// const char *sub = "A Project by YoRu";
 
-			// Calculate sizes and positions for perfect centering
-			int fontSize = 120;
-			int subFontSize = 40;
-			int textWidth = MeasureText(message, fontSize);
-			int subTextWidth = MeasureText(sub, subFontSize);
+			// // Calculate sizes and positions for perfect centering
+			// int fontSize = 120;
+			// int subFontSize = 40;
+			// int textWidth = MeasureText(message, fontSize);
+			// int subTextWidth = MeasureText(sub, subFontSize);
 
-			// Center horizontally for both texts
-			int posX = (GetScreenWidth() - textWidth) / 2;
-			int posY = (GetScreenHeight() - fontSize) / 2;
+			// // Center horizontally for both texts
+			// int posX = (GetScreenWidth() - textWidth) / 2;
+			// int posY = (GetScreenHeight() - fontSize) / 2;
 
-			// Position subtitle with better spacing (20 pixels below main text)
-			int subPosX = (GetScreenWidth() - subTextWidth) / 2;
-			int subPosY = posY + fontSize + 20;
+			// // Position subtitle with better spacing (20 pixels below main text)
+			// int subPosX = (GetScreenWidth() - subTextWidth) / 2;
+			// int subPosY = posY + fontSize + 20;
 
-			// Draw both texts
-			DrawText(message, posX, posY, fontSize, WHITE);
-			DrawText(sub, subPosX, subPosY, subFontSize, LIGHTGRAY);
+			// // Draw both texts
+			// DrawText(message, posX, posY, fontSize, WHITE);
+			// DrawText(sub, subPosX, subPosY, subFontSize, LIGHTGRAY);
 		}
 		else
 		{
