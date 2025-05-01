@@ -11,9 +11,13 @@ private:
     int size;
     int rotation;
     vector<Color> colors;
+    int rowsOffset;
+    int colsOffset;
 
 public:
     Block();
+    void Move(int rows, int cols);
+    vector<Position> GetCurrentBlock();
     void Draw();
     int id;
     map<int, vector<Position>> block;

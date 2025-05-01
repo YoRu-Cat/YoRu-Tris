@@ -18,7 +18,7 @@ int main()
 	SplashScreen splash("resources/YoRu_n.gif", 10, 6.0f, 10.0f);
 	Color dBlu = {44, 44, 127, 255};
 	Grid grid = Grid();
-	CBlock lBlock = CBlock();
+	OBlock lBlock = OBlock();
 	// Main game loop
 	while (!WindowShouldClose())
 	{

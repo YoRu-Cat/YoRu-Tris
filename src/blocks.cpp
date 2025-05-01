@@ -11,6 +11,7 @@ public:
     block[1] = {Position(0, 1), Position(1, 1), Position(2, 1), Position(2, 2)}; // L shape rotated
     block[2] = {Position(1, 0), Position(1, 1), Position(1, 2), Position(2, 0)}; // L shape rotated again
     block[3] = {Position(0, 0), Position(0, 1), Position(1, 1), Position(2, 1)}; // L shape rotated again
+    Move(0, 13);                                                                 // Initialize offsets to 0
   }
 };
 
@@ -24,6 +25,7 @@ public:
     block[1] = {Position(0, 1), Position(0, 2), Position(1, 1), Position(2, 1)}; // J shape rotated
     block[2] = {Position(1, 0), Position(1, 1), Position(1, 2), Position(2, 2)}; // J shape rotated again
     block[3] = {Position(0, 1), Position(1, 1), Position(2, 0), Position(2, 1)}; // J shape rotated again
+    Move(0, 13);                                                                 // Initialize offsets to 0
   }
 };
 
@@ -37,6 +39,7 @@ public:
     block[1] = {Position(0, 2), Position(1, 2), Position(2, 2), Position(3, 2)}; // I shape rotated
     block[2] = {Position(2, 0), Position(2, 1), Position(2, 2), Position(2, 3)}; // I shape rotated again
     block[3] = {Position(0, 1), Position(1, 1), Position(2, 1), Position(3, 1)}; // I shape rotated again
+    Move(-1, 13);                                                                // Initialize offsets to 0
   }
 };
 
@@ -50,6 +53,7 @@ public:
     block[1] = {Position(0, 0), Position(0, 1), Position(1, 0), Position(1, 1)}; // O shape rotated (same as original)
     block[2] = {Position(0, 0), Position(0, 1), Position(1, 0), Position(1, 1)}; // O shape rotated again (same as original)
     block[3] = {Position(0, 0), Position(0, 1), Position(1, 0), Position(1, 1)}; // O shape rotated again (same as original)
+    Move(0, 14);                                                                 // Initialize offsets to 0
   }
 };
 
@@ -63,6 +67,7 @@ public:
     block[1] = {Position(0, 1), Position(1, 1), Position(1, 2), Position(2, 1)}; // T shape rotated
     block[2] = {Position(1, 0), Position(1, 1), Position(1, 2), Position(2, 1)}; // T shape rotated again
     block[3] = {Position(0, 1), Position(1, 0), Position(1, 1), Position(2, 1)}; // T shape rotated again
+    Move(0, 13);                                                                 // Initialize offsets to 0
   }
 };
 
@@ -76,6 +81,7 @@ public:
     block[1] = {Position(0, 1), Position(1, 1), Position(1, 2), Position(2, 2)}; // S shape rotated
     block[2] = {Position(1, 1), Position(1, 2), Position(2, 0), Position(2, 1)}; // S shape rotated again
     block[3] = {Position(0, 0), Position(1, 0), Position(1, 1), Position(2, 1)}; // S shape rotated again
+    Move(0, 13);
   }
 };
 
@@ -89,6 +95,7 @@ public:
     block[1] = {Position(0, 2), Position(1, 1), Position(1, 2), Position(2, 1)}; // Z shape rotated
     block[2] = {Position(1, 0), Position(1, 1), Position(2, 1), Position(2, 2)}; // Z shape rotated again
     block[3] = {Position(0, 1), Position(1, 0), Position(1, 1), Position(2, 0)}; // Z shape rotated again
+    Move(0, 13);                                                                 // Initialize offsets to 0
   }
 };
 
@@ -102,6 +109,7 @@ public:
     block[1] = {Position(0, 0), Position(0, 1), Position(1, 1), Position(2, 1), Position(2, 2)}; // C shape rotated
     block[2] = {Position(0, 1), Position(0, 2), Position(1, 0), Position(1, 2), Position(2, 0)}; // C shape rotated again
     block[3] = {Position(0, 0), Position(1, 0), Position(1, 1), Position(1, 2), Position(2, 0)}; // C shape rotated again
+    Move(0, 13);
   }
 };
 
@@ -115,6 +123,7 @@ public:
     block[1] = {Position(0, 1), Position(1, 1), Position(2, 1)}; // V shape rotated
     block[2] = {Position(0, 0), Position(0, 1), Position(0, 2)}; // V shape rotated again
     block[3] = {Position(0, 0), Position(1, 0), Position(2, 0)}; // V shape rotated again (vertical orientation)
+    Move(0, 13);                                                 // Initialize offsets to 0
   }
 };
 
@@ -128,5 +137,6 @@ public:
     block[1] = {Position(0, 0), Position(1, 0), Position(2, 0), Position(0, 1), Position(1, 1), Position(2, 1)}; // II shape rotated
     block[2] = {Position(0, 0), Position(0, 1), Position(0, 2), Position(1, 0), Position(1, 1), Position(1, 2)}; // II shape rotated again (same as original)
     block[3] = {Position(0, 0), Position(1, 0), Position(2, 0), Position(0, 1), Position(1, 1), Position(2, 1)}; // II shape rotated again (same as rotation 1)
+    Move(0, 13);                                                                                                 // Initialize offsets to 0
   }
 };
