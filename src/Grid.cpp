@@ -1,5 +1,6 @@
 #include "Grid.h"
 #include "raylib.h"
+#include "Colors.h"
 
 Grid::Grid()
 {
@@ -8,6 +9,7 @@ Grid::Grid()
   cellWidth = 30;
   cellHeight = 30;
   Initialize();
+  colors = GetColors();
 }
 
 void Grid::Initialize()
@@ -23,19 +25,22 @@ void Grid::Initialize()
 
 void Grid::Draw()
 {
+  // Draw the grid cells
   for (int i = 0; i < rows; i++)
   {
     for (int j = 0; j < cols; j++)
     {
-      int verticalOffset = (GetScreenHeight() - (rows * cellHeight)) / 2;
-      if (grid[i][j] == 1)
-      {
-        DrawRectangle(j * cellWidth + verticalOffset, i * cellHeight + verticalOffset, cellWidth, cellHeight, WHITE);
-      }
-      else
-      {
-        DrawRectangleLines(j * cellWidth + verticalOffset, i * cellHeight + verticalOffset, cellWidth, cellHeight, BLACK);
-      }
+      // Calculate the position of the cell
+      int Offset = (GetScreenHeight() - (rows * cellHeight)) / 2;
+      int cellVal = grid[i][j];
+      DrawRectangle(j * cellWidth + Offset, i * cellHeight + Offset, cellWidth - 1, cellHeight - 1, colors[cellVal]);
     }
   }
+
+  // Draw the border around the grid
+  // int gridWidth = cols * cellWidth;
+  // int gridHeight = rows * cellHeight;
+  // int Offset = (GetScreenHeight() - gridHeight) / 2;
+
+  // DrawRectangleLinesEx({(float)Offset - 3, (float)Offset - 3, (float)gridWidth + 6, (float)gridHeight + 6}, 3, LIGHTGRAY);
 }

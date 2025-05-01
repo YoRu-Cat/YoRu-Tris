@@ -1,4 +1,8 @@
 #pragma once
+#include <raylib.h>
+#include <vector>
+using namespace std;
+
 class Grid
 {
 private:
@@ -6,6 +10,7 @@ private:
   int cols;
   int cellWidth;
   int cellHeight;
+  vector<Color> colors;
 
 public:
   Grid();
