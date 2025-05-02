@@ -23,15 +23,73 @@ void Block::Draw()
 
 void Block::Rotate()
 {
-    rotation = (rotation + 1) % block.size();
+    rotation++;
+    if (rotation == (int)block.size()) // If rotation exceeds the size, reset to 0
+    {
+        rotation = 0;
+    }
+}
+
+void Block::UndoRotate()
+{
+    rotation--;
+    if (rotation == -1) // If rotation is negative, reset to the last index
+    {
+        rotation = block.size() - 1;
+    }
 }
 
 void Block::Move(int rows, int cols)
 {
     rowsOffset += rows;
     colsOffset += cols;
-}
 
+    if (!IsValidPosition(rowsOffset, colsOffset))
+    {
+        rowsOffset -= rows;
+        colsOffset -= cols;
+    }
+}
+bool Block::IsValidPosition(int row, int col)
+{
+    return (row >= 0 && row < 30 && col >= 0 && col < 30); // Assuming grid size is 30x30
+}
+void Block::PreviewLanding(vector<Position> &landingBlock, Grid &grid)
+{
+    vector<Position> currentBlock = GetCurrentBlock();
+    landingBlock = currentBlock; // Start with the current block positions
+    int maxDrop = 0;
+
+    // Calculate the maximum drop distance
+    while (true)
+    {
+        bool canDrop = true;
+        for (Position pos : landingBlock)
+        {
+            if (!IsValidPosition(pos.row + 1, pos.col) || !grid.isEmpty(pos.row + 1, pos.col))
+            {
+                canDrop = false;
+                break;
+            }
+        }
+        if (!canDrop)
+        {
+            break;
+        }
+        for (Position &pos : landingBlock)
+        {
+            pos.row += 1; // Move the block down by one row
+        }
+        maxDrop++;
+    }
+
+    // Draw a white outline around the landing block
+    for (Position pos : landingBlock)
+    {
+        int Offset = (GetScreenHeight() - (30 * size)) / 2;
+        DrawRectangle(pos.col * size + Offset + size / 4, pos.row * size + Offset + size / 4, size / 2, size / 2, Fade(WHITE, 0.5f));
+    }
+}
 vector<Position> Block::GetCurrentBlock()
 {
     vector<Position> currentBlock = block[rotation];

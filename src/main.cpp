@@ -1,7 +1,9 @@
 #include "raylib.h"
 #include <cmath>
+#include <string>
 #include "YoRuSplScr.h"
 #include "Game.h"
+using namespace std;
 
 double lastTime = 0.0;
 bool Trigger(double interval)
@@ -25,9 +27,11 @@ int main()
 	InitWindow(displayWidth, displayHeight, "YoRu Screen");
 	SetTargetFPS(60);
 
+	Font font = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
+
 	Game game = Game();
 	SplashScreen splash("resources/YoRu_n.gif", 10, 6.0f, 10.0f);
-	Color dBlu = {44, 44, 127, 255};
+	// Color dBlu = {44, 44, 127, 255};
 
 	// Main game loop
 	while (!WindowShouldClose())
@@ -67,7 +71,46 @@ int main()
 		else if (check)
 		{
 			ClearBackground(dBlu);
+			// Draw the score in the top-right corner with a stylish design
+			int gridWidth, gridHeight;
+			game.grid.GetGridWidth(gridWidth, gridHeight);
+
+			string scoreText = "Score: ";
+			string nextText = "Next: ";
+			string gameOverText = "Game Over!";
+
+			Vector2 textSize = MeasureTextEx(font, scoreText.c_str(), 64, 2);
+			float padding = 200.0f;
+
+			// Calculate the position to draw the score text
+			float xPos = (GetScreenWidth() + gridWidth) / 2 - textSize.x / 2 - 100.0f; // Centered on the grid's right wall
+			float yPos = padding;																											 // Align the text to the top of the screen with padding
+
+			// Draw the score text
+			DrawTextEx(font, scoreText.c_str(), {xPos, yPos}, 64, 2, WHITE);
+			// Draw the "Next" text below the score
+			DrawTextEx(font, nextText.c_str(), {xPos, yPos + textSize.y + 50.0f}, 64, 2, WHITE);
+			// Draw a rectangle to display the score
+			Rectangle scoreRect = {xPos + textSize.x + 10.0f, yPos, 400.0f, textSize.y};
+			DrawRectangleRounded(scoreRect, 0, 6, Fade(WHITE, 0.8f)); // Semi-transparent white
+			// Draw a larger rectangle beside the "Next" text
+			Rectangle nextRect = {scoreRect.x, scoreRect.y + scoreRect.height + 30.0f, scoreRect.width, scoreRect.height + 50.0f};
+			DrawRectangleRounded(nextRect, 0, 6, Fade(WHITE, 0.8f)); // Semi-transparent white
+
+			// Draw the score inside the rectangle
+			string scoreValue = to_string(game.grid.ClearFullRows() * 100);
+			Vector2 scoreValueSize = MeasureTextEx(font, scoreValue.c_str(), 64, 2);
+			DrawTextEx(font, scoreValue.c_str(), {scoreRect.x + (scoreRect.width - scoreValueSize.x) / 2, scoreRect.y + (scoreRect.height - scoreValueSize.y) / 2}, 64, 2, BLACK);
 			game.Draw();
+			if (game.isGameOver)
+			{
+				Vector2 gameOverTextSize = MeasureTextEx(font, gameOverText.c_str(), 100, 2);
+				DrawTextEx(font, gameOverText.c_str(), {(GetScreenWidth() - gameOverTextSize.x) / 2, (GetScreenHeight() - gameOverTextSize.y) / 2 - 40}, 100, 2, WHITE);
+
+				const char *restartText = "Press ENTER to restart";
+				Vector2 restartTextSize = MeasureTextEx(font, restartText, 40, 2);
+				DrawText(restartText, (GetScreenWidth() - restartTextSize.x) / 2, (GetScreenHeight() + gameOverTextSize.y) / 2 + 20, 40, LIGHTGRAY);
+			}
 		}
 		else
 		{

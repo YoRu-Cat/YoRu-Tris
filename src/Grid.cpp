@@ -2,6 +2,35 @@
 #include "raylib.h"
 #include "Colors.h"
 
+bool Grid::isRowFull(int r)
+{
+  for (int c = 0; c < cols; c++)
+  {
+    if (grid[r][c] == 0)
+    {
+      return false; // Row is not full
+    }
+  }
+  return true; // Row is full
+}
+
+void Grid::clearRow(int r)
+{
+  for (int c = 0; c < cols; c++)
+  {
+    grid[r][c] = 0; // Clear the row by setting all cells to 0
+  }
+}
+
+void Grid::moveRowDown(int r, int n)
+{
+  for (int c = 0; c < cols; c++)
+  {
+    grid[r + n][c] = grid[r][c]; // Move the row down by n rows
+    grid[r][c] = 0;              // Clear the original row
+  }
+}
+
 Grid::Grid()
 {
   rows = 30;
@@ -38,11 +67,17 @@ void Grid::Draw()
   }
 
   // Draw the border around the grid
-  // int gridWidth = cols * cellWidth;
-  // int gridHeight = rows * cellHeight;
-  // int Offset = (GetScreenHeight() - gridHeight) / 2;
+  int gridWidth = cols * cellWidth;
+  int gridHeight = rows * cellHeight;
+  int Offset = (GetScreenHeight() - gridHeight) / 2;
 
-  // DrawRectangleLinesEx({(float)Offset - 3, (float)Offset - 3, (float)gridWidth + 6, (float)gridHeight + 6}, 3, LIGHTGRAY);
+  DrawRectangleLinesEx({(float)Offset - 4, (float)Offset - 4, (float)gridWidth + 8, (float)gridHeight + 8}, 3, dGry);
+}
+
+void Grid::GetGridWidth(int &width, int &height)
+{
+  width = cols * cellWidth;
+  height = rows * cellHeight;
 }
 
 bool Grid::CheckCollision(int r, int c)
@@ -63,4 +98,22 @@ bool Grid::isEmpty(int r, int c)
   }
   else
     return false; // Cell is occupied
+}
+
+int Grid::ClearFullRows()
+{
+  int clearedRows = 0;
+  for (int r = rows - 1; r >= 0; r--)
+  {
+    if (isRowFull(r))
+    {
+      clearRow(r); // Clear the full row
+      clearedRows++;
+    }
+    else if (clearedRows > 0)
+    {
+      moveRowDown(r, clearedRows); // Move the row down
+    }
+  }
+  return clearedRows; // Return the number of cleared rows
 }

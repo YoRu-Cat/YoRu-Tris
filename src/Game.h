@@ -13,6 +13,7 @@ private:
   void RotateBlock();
   void LockBlock();
   bool BlockFits();
+  void ResetGame();
 
 public:
   Game();
@@ -24,4 +25,5 @@ public:
   void MoveBlockL();
   void MoveBlockR();
   void MoveBlockD();
+  bool isGameOver = false;
 };

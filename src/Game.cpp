@@ -8,7 +8,8 @@ Game::Game()
   blocks = GetBlocks();
   currentBlock = GetRandomBlock();
   nextBlock = GetRandomBlock(); // Initialize the current and next blocks
-} // Initialize the blocks vector with all block types
+  isGameOver = false;
+}
 
 Block Game::GetRandomBlock()
 {
@@ -38,11 +39,18 @@ void Game::Draw()
   // Draw the grid and the current block
   grid.Draw();
   currentBlock.Draw();
+  vector<Position> landingBlock;
+  currentBlock.PreviewLanding(landingBlock, grid); // Preview the landing position of the block
 } // Draw the grid and the current block
 
 void Game::Update()
 {
   int keyPressed = GetKeyPressed();
+  if (isGameOver && keyPressed == KEY_ENTER) // Restart the game if it's over and Enter is pressed
+  {
+    isGameOver = false; // Reset the game state
+    ResetGame();
+  }
   switch (keyPressed)
   {
   case KEY_LEFT:
@@ -64,29 +72,38 @@ void Game::Update()
 
 void Game::MoveBlockL()
 {
-  currentBlock.Move(0, -1); // Move the current block left by 1 column
-  if (isBlockOut() || !BlockFits())
+  if (!isGameOver) // Check if the game is not over before moving
   {
-    currentBlock.Move(0, 1); // Move back to the right if out of bounds
+    currentBlock.Move(0, -1); // Move the current block left by 1 column
+    if (isBlockOut() || !BlockFits())
+    {
+      currentBlock.Move(0, 1); // Move back to the right if out of bounds
+    }
   }
 }
 
 void Game::MoveBlockR()
 {
-  currentBlock.Move(0, 1); // Move the current block right by 1 column
-  if (isBlockOut() || !BlockFits())
+  if (!isGameOver) // Check if the game is not over before moving
   {
-    currentBlock.Move(0, -1); // Move back to the left if out of bounds or doesn't fit
+    currentBlock.Move(0, 1); // Move the current block right by 1 column
+    if (isBlockOut() || !BlockFits())
+    {
+      currentBlock.Move(0, -1); // Move back to the left if out of bounds
+    }
   }
 }
 
 void Game::MoveBlockD()
 {
-  currentBlock.Move(1, 0); // Move the current block down by 1 row
-  if (isBlockOut() || !BlockFits())
+  if (!isGameOver) // Check if the game is not over before moving
   {
-    currentBlock.Move(-1, 0); // Move back up if out of bounds or doesn't fit
-    LockBlock();              // Lock the block in place
+    currentBlock.Move(1, 0); // Move the current block down by 1 row
+    if (isBlockOut() || !BlockFits())
+    {
+      currentBlock.Move(-1, 0); // Move back up if out of bounds
+      LockBlock();              // Lock the block in place
+    }
   }
 }
 
@@ -105,12 +122,13 @@ bool Game::isBlockOut()
 
 void Game::RotateBlock()
 {
-  currentBlock.Rotate(); // Rotate the current block
-  if (isBlockOut() || !BlockFits())
+  if (!isGameOver) // Check if the game is not over before rotating
   {
-    currentBlock.Rotate(); // Rotate back if out of bounds
-    currentBlock.Rotate(); // Rotate back again to the original position
-    currentBlock.Rotate(); // Rotate back again to the original position
+    currentBlock.Rotate(); // Rotate the current block
+    if (isBlockOut() || !BlockFits())
+    {
+      currentBlock.UndoRotate(); // Undo the rotation if it doesn't fit
+    }
   }
 }
 
@@ -121,13 +139,13 @@ void Game::LockBlock()
   {
     grid.grid[pos.row][pos.col] = currentBlock.id; // Lock the block in the grid
   }
-  currentBlock = nextBlock;     // Set the next block as the current block
-  nextBlock = GetRandomBlock(); // Get a new random block
-  if (isBlockOut())
+  currentBlock = nextBlock; // Set the next block as the current block
+  if (isBlockOut() || !BlockFits())
   {
-    // Game over condition
-    // Handle game over logic here (e.g., reset the game, show a message, etc.)
+    isGameOver = true; // Game over if the new block doesn't fit
   }
+  nextBlock = GetRandomBlock(); // Get a new random block
+  grid.ClearFullRows();         // Clear any full rows in the grid
 }
 
 bool Game::BlockFits()
@@ -141,4 +159,12 @@ bool Game::BlockFits()
     }
   }
   return true; // Block fits in the grid
+}
+
+void Game::ResetGame()
+{
+  grid.Initialize();               // Initialize the grid
+  blocks = GetBlocks();            // Reset the blocks
+  currentBlock = GetRandomBlock(); // Get a new random block
+  nextBlock = GetRandomBlock();    // Get a new random block for the next piece
 }
