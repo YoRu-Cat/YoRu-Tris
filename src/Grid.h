@@ -16,5 +16,7 @@ public:
   Grid();
   void Initialize();
   void Draw();
+  bool CheckCollision(int r, int c);
+  bool isEmpty(int r, int c);
   int grid[30][30];
 };

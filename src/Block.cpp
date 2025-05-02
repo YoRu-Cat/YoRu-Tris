@@ -21,6 +21,11 @@ void Block::Draw()
     }
 }
 
+void Block::Rotate()
+{
+    rotation = (rotation + 1) % block.size();
+}
+
 void Block::Move(int rows, int cols)
 {
     rowsOffset += rows;

@@ -44,3 +44,23 @@ void Grid::Draw()
 
   // DrawRectangleLinesEx({(float)Offset - 3, (float)Offset - 3, (float)gridWidth + 6, (float)gridHeight + 6}, 3, LIGHTGRAY);
 }
+
+bool Grid::CheckCollision(int r, int c)
+{
+  if (r >= 0 && r < rows && c >= 0 && c < cols)
+  {
+    return false;
+  }
+  else
+    return true;
+}
+
+bool Grid::isEmpty(int r, int c)
+{
+  if (grid[r][c] == 0)
+  {
+    return true; // Cell is empty
+  }
+  else
+    return false; // Cell is occupied
+}

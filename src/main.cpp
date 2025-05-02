@@ -1,9 +1,19 @@
 #include "raylib.h"
 #include <cmath>
 #include "YoRuSplScr.h"
-#include "Grid.h"
-#include "blocks.cpp"
-#include "Block.h"
+#include "Game.h"
+
+double lastTime = 0.0;
+bool Trigger(double interval)
+{
+	double currentTime = GetTime();
+	if (currentTime - lastTime >= interval)
+	{
+		lastTime = currentTime;
+		return true;
+	}
+	return false;
+}
 
 int main()
 {
@@ -15,13 +25,14 @@ int main()
 	InitWindow(displayWidth, displayHeight, "YoRu Screen");
 	SetTargetFPS(60);
 
+	Game game = Game();
 	SplashScreen splash("resources/YoRu_n.gif", 10, 6.0f, 10.0f);
 	Color dBlu = {44, 44, 127, 255};
-	Grid grid = Grid();
-	OBlock lBlock = OBlock();
+
 	// Main game loop
 	while (!WindowShouldClose())
 	{
+		static bool check = false;
 		float deltaTime = GetFrameTime();
 		// Update splash screen
 		if (splash.Update(deltaTime))
@@ -29,12 +40,15 @@ int main()
 			// Don't break the loop, just reset the splash screen
 			splash.Reset(); // Reset splash screen when complete
 		}
-
+		game.Update();
+		if (check && Trigger(0.25))
+		{
+			game.MoveBlockD(); // Move the block down every 0.15 seconds
+		}
 		BeginDrawing();
 		ClearBackground(BLACK);
 
 		// Create a boolean to track game state
-		static bool check = false;
 
 		// Update the game state based on user input
 		if (splash.IsComplete())
@@ -53,8 +67,7 @@ int main()
 		else if (check)
 		{
 			ClearBackground(dBlu);
-			grid.Draw();
-			lBlock.Draw();
+			game.Draw();
 		}
 		else
 		{

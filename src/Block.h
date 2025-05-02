@@ -19,6 +19,7 @@ public:
     void Move(int rows, int cols);
     vector<Position> GetCurrentBlock();
     void Draw();
+    void Rotate();
     int id;
     map<int, vector<Position>> block;
 };
