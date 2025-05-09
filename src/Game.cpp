@@ -9,6 +9,12 @@ Game::Game()
   currentBlock = GetRandomBlock();
   nextBlock = GetRandomBlock(); // Initialize the current and next blocks
   isGameOver = false;
+  score = 0; // Initialize the score
+}
+
+Block Game::getNextBlock()
+{
+  return nextBlock; // Return the next block
 }
 
 Block Game::GetRandomBlock()
@@ -38,10 +44,17 @@ void Game::Draw()
 {
   // Draw the grid and the current block
   grid.Draw();
-  currentBlock.Draw();
+  currentBlock.Draw(0, 0);
+
   vector<Position> landingBlock;
   currentBlock.PreviewLanding(landingBlock, grid); // Preview the landing position of the block
 } // Draw the grid and the current block
+
+float Game::GetSpeed()
+{
+  // Gradually increase speed as the score increments
+  return max(0.2f, 0.5f - (score * 0.0002f)); // Start with a slower speed and decrease linearly with score, with a minimum speed of 0.2f
+}
 
 void Game::Update()
 {
@@ -79,6 +92,10 @@ void Game::MoveBlockL()
     {
       currentBlock.Move(0, 1); // Move back to the right if out of bounds
     }
+    else
+    {
+      FixBlockPosition(); // Fix the block's position if necessary
+    }
   }
 }
 
@@ -90,6 +107,10 @@ void Game::MoveBlockR()
     if (isBlockOut() || !BlockFits())
     {
       currentBlock.Move(0, -1); // Move back to the left if out of bounds
+    }
+    else
+    {
+      FixBlockPosition(); // Fix the block's position if necessary
     }
   }
 }
@@ -103,6 +124,10 @@ void Game::MoveBlockD()
     {
       currentBlock.Move(-1, 0); // Move back up if out of bounds
       LockBlock();              // Lock the block in place
+    }
+    else
+    {
+      FixBlockPosition(); // Fix the block's position if necessary
     }
   }
 }
@@ -129,9 +154,32 @@ void Game::RotateBlock()
     {
       currentBlock.UndoRotate(); // Undo the rotation if it doesn't fit
     }
+    else
+    {
+      FixBlockPosition(); // Fix the block's position if necessary
+    }
   }
 }
+void Game::FixBlockPosition()
+{
+  vector<Position> blockPositions = currentBlock.GetCurrentBlock();
+  int minCol = 0;
 
+  // Find the leftmost column of the block
+  for (Position pos : blockPositions)
+  {
+    if (pos.col < minCol)
+    {
+      minCol = pos.col;
+    }
+  }
+
+  // If the block is out of bounds on the left, shift it to the right
+  if (minCol < 0)
+  {
+    currentBlock.Move(0, -minCol);
+  }
+}
 void Game::LockBlock()
 {
   vector<Position> blockPositions = currentBlock.GetCurrentBlock();
@@ -144,8 +192,9 @@ void Game::LockBlock()
   {
     isGameOver = true; // Game over if the new block doesn't fit
   }
-  nextBlock = GetRandomBlock(); // Get a new random block
-  grid.ClearFullRows();         // Clear any full rows in the grid
+  nextBlock = GetRandomBlock();           // Get a new random block
+  int rowsCleared = grid.ClearFullRows(); // Clear any full rows in the grid
+  UpdateScore(rowsCleared, 1);
 }
 
 bool Game::BlockFits()
@@ -167,4 +216,31 @@ void Game::ResetGame()
   blocks = GetBlocks();            // Reset the blocks
   currentBlock = GetRandomBlock(); // Get a new random block
   nextBlock = GetRandomBlock();    // Get a new random block for the next piece
+  isGameOver = false;              // Reset the game over state
+  score = 0;                       // Reset the score
+}
+
+void Game::UpdateScore(int clearedRows, int moveDown)
+{
+  switch (clearedRows)
+  {
+  case 1:
+    score += 100;
+    break;
+  case 2:
+    score += 300;
+    break;
+  case 3:
+    score += 500;
+    break;
+  case 4:
+    score += 1000;
+    break;
+  default:
+    break;
+  }
+  if (moveDown > 0)
+  {
+    score += moveDown * 10; // Add bonus points for moving down
+  }
 }

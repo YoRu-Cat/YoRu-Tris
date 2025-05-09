@@ -6,18 +6,51 @@ Block::Block()
 {
     size = 30;
     rotation = 0;
-    colors = GetColors();
     rowsOffset = 0;
     colsOffset = 0;
+    id = 0;               // Initialize id to 0
+    colors = GetColors(); // Assuming GetColors() is defined elsewhere
 }
 
-void Block::Draw()
+void Block::Move(int rows, int cols)
+{
+    rowsOffset += rows;
+    colsOffset += cols;
+
+    if (!IsValidPosition(rowsOffset, colsOffset))
+    {
+        rowsOffset -= rows;
+        colsOffset -= cols;
+    }
+}
+
+bool Block::IsValidPosition(int row, int col)
+{
+    // grid size is 30x30
+    return (row >= 0 && row < 30 && col >= 0 && col < 30);
+}
+
+vector<Position> Block::GetCurrentBlock()
+{
+    vector<Position> currentBlock = block[rotation];
+    vector<Position> movedBlock;
+    for (Position pos : currentBlock)
+    {
+        Position movedPos = Position(pos.row + rowsOffset, pos.col + colsOffset);
+        movedBlock.push_back(movedPos);
+    }
+    return movedBlock;
+}
+void Block::Draw(int offX, int offY)
 {
     vector<Position> currentBlock = GetCurrentBlock();
     for (Position pos : currentBlock)
     {
         int Offset = (GetScreenHeight() - (30 * size)) / 2;
-        DrawRectangle(pos.col * size + Offset, pos.row * size + Offset, size - 1, size - 1, colors[id]);
+        int xAxis = pos.col * size + Offset + offX;
+        int yAxis = pos.row * size + Offset + offY;
+        // Draw the block with a border
+        DrawRectangle(xAxis, yAxis, size - 1, size - 1, colors[id]);
     }
 }
 
@@ -39,21 +72,6 @@ void Block::UndoRotate()
     }
 }
 
-void Block::Move(int rows, int cols)
-{
-    rowsOffset += rows;
-    colsOffset += cols;
-
-    if (!IsValidPosition(rowsOffset, colsOffset))
-    {
-        rowsOffset -= rows;
-        colsOffset -= cols;
-    }
-}
-bool Block::IsValidPosition(int row, int col)
-{
-    return (row >= 0 && row < 30 && col >= 0 && col < 30); // Assuming grid size is 30x30
-}
 void Block::PreviewLanding(vector<Position> &landingBlock, Grid &grid)
 {
     vector<Position> currentBlock = GetCurrentBlock();
@@ -89,15 +107,4 @@ void Block::PreviewLanding(vector<Position> &landingBlock, Grid &grid)
         int Offset = (GetScreenHeight() - (30 * size)) / 2;
         DrawRectangle(pos.col * size + Offset + size / 4, pos.row * size + Offset + size / 4, size / 2, size / 2, Fade(WHITE, 0.5f));
     }
-}
-vector<Position> Block::GetCurrentBlock()
-{
-    vector<Position> currentBlock = block[rotation];
-    vector<Position> movedBlock;
-    for (Position pos : currentBlock)
-    {
-        Position movedPos = Position(pos.row + rowsOffset, pos.col + colsOffset);
-        movedBlock.push_back(movedPos);
-    }
-    return movedBlock;
 }
