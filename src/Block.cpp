@@ -17,11 +17,29 @@ void Block::Move(int rows, int cols)
     rowsOffset += rows;
     colsOffset += cols;
 
-    if (!IsValidPosition(rowsOffset, colsOffset))
+    vector<Position> currentBlock = GetCurrentBlock();
+    for (Position pos : currentBlock)
     {
-        rowsOffset -= rows;
-        colsOffset -= cols;
+        if (!IsValidPosition(pos.row, pos.col))
+        {
+            rowsOffset -= rows;
+            colsOffset -= cols;
+            return;
+        }
     }
+}
+
+bool Block::IsAtFinalPosition(Grid &grid)
+{
+    vector<Position> currentBlock = GetCurrentBlock();
+    for (Position pos : currentBlock)
+    {
+        if (pos.row + 1 >= 30 || !grid.isEmpty(pos.row + 1, pos.col))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool Block::IsValidPosition(int row, int col)

@@ -10,7 +10,7 @@ public:
     block.resize(4);                                                             // Resize the block vector to hold 4 rotations
     block[0] = {Position(0, 2), Position(1, 0), Position(1, 1), Position(1, 2)}; // L shape
     block[1] = {Position(0, 1), Position(1, 1), Position(2, 1), Position(2, 2)}; // L shape rotated
-    block[2] = {Position(1, 0), Position(1, 1), Position(1, 2), Position(2, 0)}; // L shape rotated again
+    block[2] = {Position(0, 0), Position(0, 1), Position(0, 2), Position(1, 0)}; // L shape rotated again
     block[3] = {Position(0, 0), Position(0, 1), Position(1, 1), Position(2, 1)}; // L shape rotated again
     Move(0, 13);                                                                 // Initialize offsets to 0
   }
@@ -25,7 +25,7 @@ public:
     block.resize(4);                                                             // Resize the block vector to hold 4 rotations
     block[0] = {Position(0, 0), Position(1, 0), Position(1, 1), Position(1, 2)}; // J shape
     block[1] = {Position(0, 1), Position(0, 2), Position(1, 1), Position(2, 1)}; // J shape rotated
-    block[2] = {Position(1, 0), Position(1, 1), Position(1, 2), Position(2, 2)}; // J shape rotated again
+    block[2] = {Position(0, 0), Position(0, 1), Position(0, 2), Position(1, 2)}; // J shape rotated again
     block[3] = {Position(0, 1), Position(1, 1), Position(2, 0), Position(2, 1)}; // J shape rotated again
     Move(0, 13);                                                                 // Initialize offsets to 0
   }
@@ -38,9 +38,9 @@ public:
   {
     id = 7;
     block.resize(4);                                                             // Resize the block vector to hold 4 rotations
-    block[0] = {Position(1, 0), Position(1, 1), Position(1, 2), Position(1, 3)}; // I shape
+    block[0] = {Position(0, 0), Position(0, 1), Position(0, 2), Position(0, 3)}; // I shape
     block[1] = {Position(0, 2), Position(1, 2), Position(2, 2), Position(3, 2)}; // I shape rotated
-    block[2] = {Position(2, 0), Position(2, 1), Position(2, 2), Position(2, 3)}; // I shape rotated again
+    block[2] = {Position(0, 0), Position(0, 1), Position(0, 2), Position(0, 3)}; // I shape rotated again
     block[3] = {Position(0, 1), Position(1, 1), Position(2, 1), Position(3, 1)}; // I shape rotated again
     Move(0, 13);                                                                 // Initialize offsets to 0
   }
@@ -70,7 +70,7 @@ public:
     block.resize(4);                                                             // Resize the block vector to hold 4 rotations
     block[0] = {Position(0, 1), Position(1, 0), Position(1, 1), Position(1, 2)}; // T shape
     block[1] = {Position(0, 1), Position(1, 1), Position(1, 2), Position(2, 1)}; // T shape rotated
-    block[2] = {Position(1, 0), Position(1, 1), Position(1, 2), Position(2, 1)}; // T shape rotated again
+    block[2] = {Position(0, 0), Position(0, 1), Position(0, 2), Position(1, 1)}; // T shape rotated again
     block[3] = {Position(0, 1), Position(1, 0), Position(1, 1), Position(2, 1)}; // T shape rotated again
     Move(0, 13);                                                                 // Initialize offsets to 0
   }
@@ -85,7 +85,7 @@ public:
     block.resize(4);                                                             // Resize the block vector to hold 4 rotations
     block[0] = {Position(0, 1), Position(0, 2), Position(1, 0), Position(1, 1)}; // S shape
     block[1] = {Position(0, 1), Position(1, 1), Position(1, 2), Position(2, 2)}; // S shape rotated
-    block[2] = {Position(1, 1), Position(1, 2), Position(2, 0), Position(2, 1)}; // S shape rotated again
+    block[2] = {Position(0, 1), Position(0, 2), Position(1, 0), Position(1, 1)}; // S shape rotated again
     block[3] = {Position(0, 0), Position(1, 0), Position(1, 1), Position(2, 1)}; // S shape rotated again
     Move(0, 13);
   }
@@ -100,7 +100,7 @@ public:
     block.resize(4);                                                             // Resize the block vector to hold 4 rotations
     block[0] = {Position(0, 0), Position(0, 1), Position(1, 1), Position(1, 2)}; // Z shape
     block[1] = {Position(0, 2), Position(1, 1), Position(1, 2), Position(2, 1)}; // Z shape rotated
-    block[2] = {Position(1, 0), Position(1, 1), Position(2, 1), Position(2, 2)}; // Z shape rotated again
+    block[2] = {Position(0, 0), Position(0, 1), Position(1, 1), Position(1, 2)}; // Z shape rotated again
     block[3] = {Position(0, 1), Position(1, 0), Position(1, 1), Position(2, 0)}; // Z shape rotated again
     Move(0, 13);                                                                 // Initialize offsets to 0
   }

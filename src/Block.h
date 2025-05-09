@@ -16,6 +16,7 @@ private:
 public:
     Block();
     void Move(int rows, int cols);
+    bool IsAtFinalPosition(Grid &grid);
     bool IsValidPosition(int row, int col);
     vector<Position> GetCurrentBlock();
     void Draw(int offX, int offY);

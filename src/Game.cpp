@@ -76,6 +76,7 @@ void Game::Update()
     isGameOver = false; // Reset the game state
     ResetGame();
   }
+
   switch (keyPressed)
   {
   case KEY_LEFT:
@@ -92,6 +93,12 @@ void Game::Update()
     break;
   default:
     break; // No action for other keys
+  }
+
+  // Check if the block is at its final position
+  if (currentBlock.IsAtFinalPosition(grid))
+  {
+    LockBlock(); // Lock the block in place
   }
 }
 
@@ -201,7 +208,7 @@ void Game::LockBlock()
     grid.grid[pos.row][pos.col] = currentBlock.id; // Lock the block in the grid
   }
   currentBlock = nextBlock; // Set the next block as the current block
-  if (isBlockOut() || !BlockFits())
+  if (currentBlock.IsAtFinalPosition(grid) || !BlockFits())
   {
     isGameOver = true; // Game over if the new block doesn't fit
   }
