@@ -9,9 +9,21 @@ Game::Game()
   currentBlock = GetRandomBlock();
   nextBlock = GetRandomBlock(); // Initialize the current and next blocks
   isGameOver = false;
-  score = 0; // Initialize the score
+  score = 0;                                   // Initialize the score
+  InitAudioDevice();                           // Initialize audio device
+  music = LoadMusicStream("Sounds/music.mp3"); // Load the music stream
+  PlayMusicStream(music);
+  rotate = LoadSound("Sounds/rotate.wav"); // Play the music stream
+  clear = LoadSound("Sounds/clear.wav");   // Play the clear sound
 }
-
+Game::~Game()
+{
+  UnloadSound(rotate);      // Unload the sound
+  UnloadSound(clear);       // Unload the sound
+  UnloadMusicStream(music); // Unload the music stream
+  CloseAudioDevice();       // Close the audio device
+  // Clean up other resources if needed
+}
 Block Game::getNextBlock()
 {
   return nextBlock; // Return the next block
@@ -157,6 +169,7 @@ void Game::RotateBlock()
     else
     {
       FixBlockPosition(); // Fix the block's position if necessary
+      PlaySound(rotate);  // Play the rotation sound
     }
   }
 }
@@ -194,6 +207,10 @@ void Game::LockBlock()
   }
   nextBlock = GetRandomBlock();           // Get a new random block
   int rowsCleared = grid.ClearFullRows(); // Clear any full rows in the grid
+  if (rowsCleared > 0)
+  {
+    PlaySound(clear); // Play the clear sound
+  }
   UpdateScore(rowsCleared, 1);
 }
 

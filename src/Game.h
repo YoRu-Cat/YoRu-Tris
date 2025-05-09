@@ -20,9 +20,12 @@ private:
   vector<Block> GetBlocks();
   void MoveBlockL();
   void MoveBlockR();
+  Sound rotate;
+  Sound clear;
 
 public:
   Game();
+  ~Game();
   Block getNextBlock();
   void Draw();
   float GetSpeed();
@@ -31,4 +34,5 @@ public:
   void MoveBlockD();
   bool isGameOver;
   int score;
+  Music music;
 };

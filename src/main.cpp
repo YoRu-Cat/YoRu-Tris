@@ -71,6 +71,7 @@ int main()
 		}
 		else if (check)
 		{
+			UpdateMusicStream(game.music);
 			ClearBackground(dBlu);
 			// Draw the score in the top-right corner with a stylish design
 			int gridWidth, gridHeight;
