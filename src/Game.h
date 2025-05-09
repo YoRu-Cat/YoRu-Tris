@@ -16,18 +16,18 @@ private:
   bool BlockFits();
   void ResetGame();
   void UpdateScore(int clearedRows, int moveDown);
+  Block GetRandomBlock();
+  vector<Block> GetBlocks();
+  void MoveBlockL();
+  void MoveBlockR();
 
 public:
   Game();
   Block getNextBlock();
-  Block GetRandomBlock();
-  vector<Block> GetBlocks();
-  Grid grid;
   void Draw();
   float GetSpeed();
   void Update();
-  void MoveBlockL();
-  void MoveBlockR();
+  Grid grid;
   void MoveBlockD();
   bool isGameOver;
   int score;
