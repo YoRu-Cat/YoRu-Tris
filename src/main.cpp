@@ -30,6 +30,9 @@ int main()
 	Font font = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
 
 	Game game = Game();
+	string scoreText = "Score: ";
+	string nextText = "Next: ";
+	string gameOverText = "Game Over!";
 	SplashScreen splash("resources/YoRu_n.gif", 10, 6.0f, 10.0f);
 	// Color dBlu = {44, 44, 127, 255};
 
@@ -45,7 +48,7 @@ int main()
 			splash.Reset(); // Reset splash screen when complete
 		}
 		game.Update();
-		if (check && Trigger(game.GetSpeed()))
+		if (check && !game.isGameOver && Trigger(game.GetSpeed()))
 		{
 			game.MoveBlockD(); // Move the block down every 0.15 seconds
 		}
@@ -69,17 +72,13 @@ int main()
 		{
 			splash.Draw();
 		}
-		else if (check)
+		else if (check && !game.isGameOver)
 		{
 			UpdateMusicStream(game.music);
 			ClearBackground(dBlu);
 			// Draw the score in the top-right corner with a stylish design
 			int gridWidth, gridHeight;
 			game.grid.GetGridWidth(gridWidth, gridHeight);
-
-			string scoreText = "Score: ";
-			string nextText = "Next: ";
-			string gameOverText = "Game Over!";
 
 			Vector2 textSize = MeasureTextEx(font, scoreText.c_str(), 64, 2);
 			float padding = 200.0f;
@@ -119,13 +118,18 @@ int main()
 			game.Draw();
 			if (game.isGameOver)
 			{
-				Vector2 gameOverTextSize = MeasureTextEx(font, gameOverText.c_str(), 100, 2);
-				DrawTextEx(font, gameOverText.c_str(), {(GetScreenWidth() - gameOverTextSize.x) / 2, (GetScreenHeight() - gameOverTextSize.y) / 2 - 40}, 100, 2, WHITE);
-
-				const char *restartText = "Press ENTER to restart";
-				Vector2 restartTextSize = MeasureTextEx(font, restartText, 40, 2);
-				DrawText(restartText, (GetScreenWidth() - restartTextSize.x) / 2, (GetScreenHeight() + gameOverTextSize.y) / 2 + 20, 40, LIGHTGRAY);
+				continue; // Skip the game over text if the game is not over
 			}
+		}
+		else if (game.isGameOver)
+		{
+			ClearBackground(dBlu);
+			Vector2 gameOverTextSize = MeasureTextEx(font, gameOverText.c_str(), 100, 2);
+			DrawTextEx(font, gameOverText.c_str(), {(GetScreenWidth() - gameOverTextSize.x) / 2, (GetScreenHeight() - gameOverTextSize.y) / 2 - 40}, 100, 2, WHITE);
+
+			const char *restartText = "Press ENTER to restart";
+			Vector2 restartTextSize = MeasureTextEx(font, restartText, 40, 2);
+			DrawText(restartText, (GetScreenWidth() - restartTextSize.x) / 2, (GetScreenHeight() + gameOverTextSize.y) / 2 + 20, 40, LIGHTGRAY);
 		}
 		else
 		{
