@@ -65,7 +65,7 @@ void Game::Draw()
 float Game::GetSpeed()
 {
   // Gradually increase speed as the score increments
-  return max(0.2f, 0.5f - (score * 0.0002f)); // Start with a slower speed and decrease linearly with score, with a minimum speed of 0.2f
+  return max(0.12f, 0.5f - (score * 0.0004f)); // Start with a slower speed and decrease linearly with score, with a minimum speed of 0.1f
 }
 
 void Game::Update()
