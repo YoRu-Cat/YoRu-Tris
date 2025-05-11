@@ -22,10 +22,12 @@ private:
   void MoveBlockR();
   Sound rotate;
   Sound clear;
+  int level;
 
 public:
   Game();
   ~Game();
+  int GetLevel();
   Block getNextBlock();
   void Draw();
   float GetSpeed();

@@ -10,6 +10,7 @@ Game::Game()
   nextBlock = GetRandomBlock(); // Initialize the current and next blocks
   isGameOver = false;
   score = 0;                                   // Initialize the score
+  level = 1;                                   // Initialize the level
   InitAudioDevice();                           // Initialize audio device
   music = LoadMusicStream("Sounds/music.mp3"); // Load the music stream
   PlayMusicStream(music);
@@ -24,6 +25,12 @@ Game::~Game()
   CloseAudioDevice();       // Close the audio device
   // Clean up other resources if needed
 }
+int Game::GetLevel()
+{
+  int currentLevel = score / 250 + 1;
+  level = currentLevel;
+  return level;
+}
 Block Game::getNextBlock()
 {
   return nextBlock; // Return the next block
@@ -31,25 +38,28 @@ Block Game::getNextBlock()
 
 Block Game::GetRandomBlock()
 {
-  // Randomly select a block from the blocks vector
-  if (blocks.empty())
+  // Determine available blocks based on score
+  vector<Block> availableBlocks;
+  if (score >= 1000)
   {
-    blocks = GetBlocks(); // Reset the blocks if empty
+    availableBlocks = GetBlocks(); // All blocks including special ones
+  }
+  else
+  {
+    availableBlocks = {LBlock(), TBlock(), IBlock(), OBlock(), SBlock(), ZBlock(), JBlock()}; // Basic blocks only
   }
 
-  random_device rd;                                       // Obtain a random number from hardware
-  mt19937 eng(rd());                                      // Seed the generator
-  uniform_int_distribution<> distr(0, blocks.size() - 1); // Define the range
+  random_device rd;
+  mt19937 eng(rd());
+  uniform_int_distribution<> distr(0, availableBlocks.size() - 1);
 
   int randomIndex = distr(eng);
-  Block block = blocks[randomIndex];
-  blocks.erase(blocks.begin() + randomIndex); // Remove the block from the vector
-  return block;
+  return availableBlocks[randomIndex];
 }
 
 vector<Block> Game::GetBlocks()
 {
-  return {LBlock(), TBlock(), IBlock(), OBlock(), SBlock(), ZBlock(), JBlock()};
+  return {LBlock(), TBlock(), IBlock(), OBlock(), SBlock(), ZBlock(), JBlock(), CBlock(), VBlock(), IIBlock()}; // Return a vector of all blocks
 }
 
 void Game::Draw()
@@ -223,7 +233,10 @@ void Game::LockBlock()
   {
     PlaySound(clear); // Play the clear sound
   }
-  UpdateScore(rowsCleared, 1);
+  if (!isGameOver)
+  {
+    UpdateScore(rowsCleared, 1);
+  }
 }
 
 bool Game::BlockFits()
