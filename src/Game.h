@@ -1,5 +1,7 @@
 #pragma once
 #include "Grid.h"
+#include "Block.h"
+#include "LeaderBoard.h"
 #include "blocks.cpp"
 using namespace std;
 class Game
@@ -22,7 +24,9 @@ private:
   void MoveBlockR();
   Sound rotate;
   Sound clear;
+  Sound gameOverSound;
   int level;
+  bool scoreSaved = false; // New member variable
 
 public:
   Game();
@@ -31,6 +35,8 @@ public:
   Block getNextBlock();
   void Draw();
   float GetSpeed();
+  bool GetScoreSaved();
+  void SetScoreSaved(bool saved); // Setter for scoreSaved
   void Update();
   Grid grid;
   void MoveBlockD();

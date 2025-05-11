@@ -14,15 +14,17 @@ Game::Game()
   InitAudioDevice();                           // Initialize audio device
   music = LoadMusicStream("Sounds/music.mp3"); // Load the music stream
   PlayMusicStream(music);
-  rotate = LoadSound("Sounds/rotate.wav"); // Play the music stream
-  clear = LoadSound("Sounds/clear.wav");   // Play the clear sound
+  rotate = LoadSound("Sounds/rotate.wav");          // Play the music stream
+  clear = LoadSound("Sounds/clear.wav");            // Play the clear sound
+  gameOverSound = LoadSound("Sounds/GameOver.wav"); // Load game over sound
 }
 Game::~Game()
 {
-  UnloadSound(rotate);      // Unload the sound
-  UnloadSound(clear);       // Unload the sound
-  UnloadMusicStream(music); // Unload the music stream
-  CloseAudioDevice();       // Close the audio device
+  UnloadSound(rotate);        // Unload the sound
+  UnloadSound(clear);         // Unload the sound
+  UnloadSound(gameOverSound); // Unload game over sound
+  UnloadMusicStream(music);   // Unload the music stream
+  CloseAudioDevice();         // Close the audio device
   // Clean up other resources if needed
 }
 int Game::GetLevel()
@@ -76,6 +78,16 @@ float Game::GetSpeed()
 {
   // Gradually increase speed as the score increments
   return max(0.12f, 0.5f - (score * 0.0004f)); // Start with a slower speed and decrease linearly with score, with a minimum speed of 0.1f
+}
+
+bool Game::GetScoreSaved()
+{
+  return scoreSaved;
+}
+
+void Game::SetScoreSaved(bool saved)
+{
+  scoreSaved = saved;
 }
 
 void Game::Update()
@@ -223,18 +235,24 @@ void Game::LockBlock()
     grid.grid[pos.row][pos.col] = currentBlock.id; // Lock the block in the grid
   }
   currentBlock = nextBlock; // Set the next block as the current block
+
   if (currentBlock.IsAtFinalPosition(grid) || !BlockFits())
   {
-    isGameOver = true; // Game over if the new block doesn't fit
+    if (!isGameOver)
+    { // Only do this once when the game first ends
+      isGameOver = true;
+      PlaySound(gameOverSound);
+      // Don't save the score yet - we'll do that elsewhere
+    }
   }
-  nextBlock = GetRandomBlock();           // Get a new random block
-  int rowsCleared = grid.ClearFullRows(); // Clear any full rows in the grid
-  if (rowsCleared > 0)
+  else
   {
-    PlaySound(clear); // Play the clear sound
-  }
-  if (!isGameOver)
-  {
+    nextBlock = GetRandomBlock();           // Get a new random block
+    int rowsCleared = grid.ClearFullRows(); // Clear any full rows in the grid
+    if (rowsCleared > 0)
+    {
+      PlaySound(clear); // Play the clear sound
+    }
     UpdateScore(rowsCleared, 1);
   }
 }
@@ -260,6 +278,7 @@ void Game::ResetGame()
   nextBlock = GetRandomBlock();    // Get a new random block for the next piece
   isGameOver = false;              // Reset the game over state
   score = 0;                       // Reset the score
+  scoreSaved = false;              // Reset the score saved flag
 }
 
 void Game::UpdateScore(int clearedRows, int moveDown)

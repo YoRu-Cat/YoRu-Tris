@@ -34,6 +34,9 @@ int main()
 	Animation backgroundAnim("./Media/5.gif", 35, 10.0f); // Adjust path, frames, and fps as needed
 	backgroundAnim.SetLooping(true);											// Scale to fit screen width - adjust divisor based on your animation's native size
 
+	LeaderBoard leaderboard;
+	static bool showLeaderboard = false;
+
 	Game game = Game();
 	string scoreText = "Score: ";
 	string nextText = "Next: ";
@@ -178,40 +181,42 @@ int main()
 		}
 		else if (game.isGameOver)
 		{
-			// Draw animated background with a darkened overlay
+			// Draw game over screen
 			backgroundAnim.DrawFrame();
 			DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.7f));
 
-			float centerY = GetScreenHeight() / 2;
+			// Only save the score once
+			if (!game.GetScoreSaved())
+			{
+				// Save score to leaderboard
+				leaderboard.addScore("Player", game.score, game.GetLevel());
+				game.SetScoreSaved(true);
+			}
 
-			// Game Over Text
-			Vector2 gameOverTextSize = MeasureTextEx(font, gameOverText.c_str(), 100, 2);
-			DrawTextEx(font, gameOverText.c_str(), {(GetScreenWidth() - gameOverTextSize.x) / 2, centerY - 150}, 100, 2, WHITE);
+			// Draw game over text and score
+			Vector2 gameOverSize = MeasureTextEx(font, gameOverText.c_str(), 100, 2);
+			DrawTextEx(font, gameOverText.c_str(), {(float)(GetScreenWidth() - gameOverSize.x) / 2, (float)(GetScreenHeight() / 2 - 100)}, 100, 2, WHITE);
 
-			// Restart Text
-			const char *restartText = "Press ENTER to restart";
-			Vector2 restartTextSize = MeasureTextEx(font, restartText, 40, 2);
-			DrawTextEx(font, restartText, {(GetScreenWidth() - restartTextSize.x) / 2, centerY - 50}, 40, 2, LIGHTGRAY);
+			// Draw the score
+			string finalScore = yourScoreText + to_string(game.score);
+			Vector2 scoreSize = MeasureTextEx(font, finalScore.c_str(), 64, 2);
+			DrawTextEx(font, finalScore.c_str(), {(float)(GetScreenWidth() - scoreSize.x) / 2, (float)(GetScreenHeight() / 2 + 50)}, 64, 2, WHITE);
 
-			// Score Display
-			Vector2 scoreTextSize = MeasureTextEx(font, yourScoreText.c_str(), 64, 2);
-			float totalWidth = scoreTextSize.x + 400.0f + 10.0f; // text + rectangle + spacing
-			float xPos = (GetScreenWidth() - totalWidth) / 2;
-
-			// Draw the score text
-			DrawTextEx(font, yourScoreText.c_str(), {xPos, centerY + 50}, 64, 2, WHITE);
-
-			// Draw score rectangle
-			Rectangle scoreRect = {xPos + scoreTextSize.x + 10.0f, centerY + 50, 400.0f, scoreTextSize.y};
-			DrawRectangleRounded(scoreRect, 0, 6, Fade(RAYWHITE, 0.5f));
-
-			// Draw score rectangle outline
-			Rectangle scoreOutlineRect = {scoreRect.x - 2, scoreRect.y - 2, scoreRect.width + 4, scoreRect.height + 4};
-			DrawRectangleRoundedLines(scoreOutlineRect, 0, 6, 3, Fade(RAYWHITE, 0.6f));
-			// Draw the score value
-			string scoreValue = to_string(game.score);
-			Vector2 scoreValueSize = MeasureTextEx(font, scoreValue.c_str(), 64, 2);
-			DrawTextEx(font, scoreValue.c_str(), {scoreRect.x + (scoreRect.width - scoreValueSize.x) / 2, scoreRect.y + (scoreRect.height - scoreValueSize.y) / 2}, 64, 2, dGry);
+			// Draw restart prompt
+			DrawText("Press Enter to restart", GetScreenWidth() / 2 - MeasureText("Press Enter to restart", 40) / 2, GetScreenHeight() / 2 + 150, 40, WHITE);
+		}
+		else if (showLeaderboard == true)
+		{
+			// Draw animated background with a darkened overlay
+			backgroundAnim.DrawFrame();
+			DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.7f));
+			// Draw the leaderboard
+			leaderboard.loadFromFile();
+			leaderboard.DrawLB();
+			if (IsKeyPressed(KEY_ENTER))
+			{
+				showLeaderboard = false; // Hide the leaderboard when Enter is pressed
+			}
 		}
 		else
 		{
@@ -227,17 +232,32 @@ int main()
 			DrawText("Press ENTER to start", GetScreenWidth() / 2 - MeasureText("Press ENTER to start", 40) / 2, startY + 120, 40, LIGHTGRAY);
 
 			// Leaderboard button
+			// Common function to check if mouse is hovering over a rectangle
+			auto isMouseOverRect = [](Rectangle rect)
+			{
+				Vector2 mousePos = GetMousePosition();
+				return CheckCollisionPointRec(mousePos, rect);
+			};
+
+			// Leaderboard button
 			Rectangle leaderboardRect = {(float)(GetScreenWidth() / 2 - 200), startY + 200, 400.0f, 64.0f};
-			DrawRectangleRounded(leaderboardRect, 0, 6, Fade(RAYWHITE, 0.6f));
+			Color leaderboardColor = isMouseOverRect(leaderboardRect) ? Fade(LIGHTGRAY, 0.6f) : Fade(RAYWHITE, 0.6f);
+			DrawRectangleRounded(leaderboardRect, 0, 6, leaderboardColor);
 			Rectangle outlineRect = {leaderboardRect.x - 2, leaderboardRect.y - 2, leaderboardRect.width + 4, leaderboardRect.height + 4};
 			DrawRectangleRoundedLines(outlineRect, 0, 6, 3, Fade(RAYWHITE, 0.6f));
 			const char *leaderboardText = "Leaderboard";
 			Vector2 textSize = MeasureTextEx(font, leaderboardText, 64, 2);
 			DrawTextEx(font, leaderboardText, {leaderboardRect.x + (leaderboardRect.width - textSize.x) / 2, leaderboardRect.y + (leaderboardRect.height - textSize.y) / 2}, 64, 2, dGry);
-
+			// Handle leaderboard button click
+			if (isMouseOverRect(leaderboardRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+			{
+				// Add a state variable at the top of the file with other globals
+				showLeaderboard = true; // Set the state when button is clicked
+			}
 			// Themes button
 			Rectangle themesRect = {(float)(GetScreenWidth() / 2 - 200), startY + 300, 400.0f, 64.0f};
-			DrawRectangleRounded(themesRect, 0, 6, Fade(RAYWHITE, 0.6f));
+			Color themesColor = isMouseOverRect(themesRect) ? Fade(LIGHTGRAY, 0.6f) : Fade(RAYWHITE, 0.6f);
+			DrawRectangleRounded(themesRect, 0, 6, themesColor);
 			DrawRectangleRoundedLines({themesRect.x - 2, themesRect.y - 2, themesRect.width + 4, themesRect.height + 4}, 0, 6, 3, Fade(RAYWHITE, 0.6f));
 			const char *themesText = "Themes";
 			Vector2 themesSize = MeasureTextEx(font, themesText, 64, 2);
@@ -245,7 +265,8 @@ int main()
 
 			// Settings button
 			Rectangle settingsRect = {(float)(GetScreenWidth() / 2 - 200), startY + 400, 400.0f, 64.0f};
-			DrawRectangleRounded(settingsRect, 0, 6, Fade(RAYWHITE, 0.6f));
+			Color settingsColor = isMouseOverRect(settingsRect) ? Fade(LIGHTGRAY, 0.6f) : Fade(RAYWHITE, 0.6f);
+			DrawRectangleRounded(settingsRect, 0, 6, settingsColor);
 			DrawRectangleRoundedLines({settingsRect.x - 2, settingsRect.y - 2, settingsRect.width + 4, settingsRect.height + 4}, 0, 6, 3, Fade(RAYWHITE, 0.6f));
 			const char *settingsText = "Settings";
 			Vector2 settingsSize = MeasureTextEx(font, settingsText, 64, 2);
@@ -253,7 +274,8 @@ int main()
 
 			// Exit button
 			Rectangle exitRect = {(float)(GetScreenWidth() / 2 - 200), startY + 500, 400.0f, 64.0f};
-			DrawRectangleRounded(exitRect, 0, 6, Fade(RAYWHITE, 0.6f));
+			Color exitColor = isMouseOverRect(exitRect) ? Fade(LIGHTGRAY, 0.6f) : Fade(RAYWHITE, 0.6f);
+			DrawRectangleRounded(exitRect, 0, 6, exitColor);
 			DrawRectangleRoundedLines({exitRect.x - 2, exitRect.y - 2, exitRect.width + 4, exitRect.height + 4}, 0, 6, 3, Fade(RAYWHITE, 0.6f));
 			const char *exitText = "Exit";
 			Vector2 exitSize = MeasureTextEx(font, exitText, 64, 2);

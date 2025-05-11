@@ -114,9 +114,9 @@ public:
     id = 3;
     block.resize(4);                                                                             // Resize the block vector to hold 4 rotations
     block[0] = {Position(0, 0), Position(0, 1), Position(0, 2), Position(1, 0), Position(1, 2)}; // C shape
-    block[1] = {Position(0, 0), Position(0, 1), Position(1, 1), Position(2, 1), Position(2, 2)}; // C shape rotated
-    block[2] = {Position(0, 1), Position(0, 2), Position(1, 0), Position(1, 2), Position(2, 0)}; // C shape rotated again
-    block[3] = {Position(0, 0), Position(1, 0), Position(1, 1), Position(1, 2), Position(2, 0)}; // C shape rotated again
+    block[1] = {Position(0, 0), Position(0, 1), Position(1, 1), Position(2, 1), Position(2, 0)}; // C shape rotated
+    block[2] = {Position(0, 1), Position(0, 0), Position(1, 0), Position(2, 0), Position(2, 1)}; // C shape rotated again
+    block[3] = {Position(0, 0), Position(1, 0), Position(1, 1), Position(1, 2), Position(0, 2)}; // C shape rotated again
     Move(0, 13);
   }
 };
