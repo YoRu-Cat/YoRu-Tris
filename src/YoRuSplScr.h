@@ -14,6 +14,7 @@ private:
 	float duration;
 	float timer;
 	float scale;
+	bool loopAnimation;
 	Rectangle sourceRec;
 	bool animationComplete;
 

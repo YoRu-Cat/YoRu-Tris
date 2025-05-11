@@ -37,6 +37,8 @@ Grid::Grid()
   cols = 30;
   cellWidth = 30;
   cellHeight = 30;
+  rowCleared = 0;
+  // Initialize the grid with zeros
   Initialize();
   colors = GetColors();
 }
@@ -59,19 +61,42 @@ void Grid::Draw()
   {
     for (int j = 0; j < cols; j++)
     {
-      // Calculate the position of the cell
       int Offset = (GetScreenHeight() - (rows * cellHeight)) / 2;
       int cellVal = grid[i][j];
-      DrawRectangle(j * cellWidth + Offset, i * cellHeight + Offset, cellWidth - 1, cellHeight - 1, colors[cellVal]);
+
+      // Calculate cell position
+      float x = j * cellWidth + Offset;
+      float y = i * cellHeight + Offset;
+
+      if (cellVal > 0)
+      {
+        // Draw cell glow effect
+        Color glowColor = ColorAlpha(colors[cellVal], 0.3f);
+        DrawRectangle(x - 2, y - 2, cellWidth + 4, cellHeight + 4, glowColor);
+
+        // Draw gradient cell
+        Color darkColor = ColorBrightness(colors[cellVal], -0.3f);
+        DrawRectangleGradientV(x, y, cellWidth - 1, cellHeight - 1, colors[cellVal], darkColor);
+
+        // Draw cell highlights
+        DrawRectangleLinesEx({x, y, (float)cellWidth - 1, (float)cellHeight - 1}, 1, WHITE);
+      }
+      else
+      {
+        // Draw empty cell with subtle grid pattern
+        Color gridColor = ColorAlpha(LIGHTGRAY, 0.2f);
+        DrawRectangleLinesEx({x, y, (float)cellWidth - 1, (float)cellHeight - 1}, 1, gridColor);
+      }
     }
   }
 
-  // Draw the border around the grid
+  // Draw decorative border
   int gridWidth = cols * cellWidth;
   int gridHeight = rows * cellHeight;
   int Offset = (GetScreenHeight() - gridHeight) / 2;
 
-  DrawRectangleLinesEx({(float)Offset - 4, (float)Offset - 4, (float)gridWidth + 8, (float)gridHeight + 8}, 3, dGry);
+  // Outer glow
+  DrawRectangleLinesEx({(float)Offset - 6, (float)Offset - 6, (float)gridWidth + 12, (float)gridHeight + 12}, 2, ColorAlpha(RAYWHITE, 0.3f));
 }
 
 void Grid::GetGridWidth(int &width, int &height)
@@ -109,6 +134,7 @@ int Grid::ClearFullRows()
     {
       clearRow(r); // Clear the full row
       clearedRows++;
+      rowCleared++;
     }
     else if (clearedRows > 0)
     {

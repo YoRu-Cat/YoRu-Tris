@@ -7,18 +7,18 @@ const Color dOrg = {226, 116, 17, 255};
 const Color dYlw = {237, 234, 4, 255};
 const Color dCya = {21, 204, 209, 255};
 const Color dPur = {166, 0, 247, 255};
-const Color dGry = {26, 31, 40, 155};
+const Color dGry = {26, 31, 40, 180};
 const Color rose = {247, 37, 133, 255};
 const Color fDan = {181, 37, 133, 255};
 const Color Grap = {114, 9, 183, 255};
 const Color cBlu = {86, 11, 173, 255};
-const Color Zafr = {58, 12, 163, 255};
+const Color Zafr = {58, 12, 163, 155};
 const Color pBlu = {63, 55, 201, 255};
 const Color nBlu = {67, 97, 238, 255};
 const Color sBlu = {76, 201, 240, 255};
 
 vector<Color> GetColors()
 {
-  vector<Color> colors = {dGry, dBlu, dGrn, dRed, dOrg, dYlw, dCya, dPur, rose, fDan, Grap, cBlu, Zafr, pBlu, nBlu, sBlu};
+  vector<Color> colors = {dGry, Grap, dBlu, dOrg, dGrn, dYlw, dCya, dPur, rose, fDan, cBlu, pBlu, nBlu, dRed, sBlu, Zafr};
   return colors;
 }

@@ -32,6 +32,7 @@ public:
   void Update();
   Grid grid;
   void MoveBlockD();
+  int GetClearedLines();
   bool isGameOver;
   int score;
   Music music;

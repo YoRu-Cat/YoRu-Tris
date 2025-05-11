@@ -15,6 +15,7 @@ SplashScreen::SplashScreen(const char *gifPath, int frames, float displayTime, f
   frameAccumulator = 0.0f;
   isComplete = false;
   animationComplete = false;
+  loopAnimation = false; // Set to true to keep looping
   duration = displayTime;
   timer = 0.0f;
 

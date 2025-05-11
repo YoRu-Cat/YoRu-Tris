@@ -3,6 +3,7 @@
 #include <string>
 #include "YoRuSplScr.h"
 #include "Game.h"
+#include "Anim.h" // Add this include for the Animation class
 using namespace std;
 
 double lastTime = 0.0;
@@ -29,10 +30,15 @@ int main()
 
 	Font font = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
 
+	// Create background animation
+	Animation backgroundAnim("./Media/5.gif", 10, 10.0f); // Adjust path, frames, and fps as needed
+	backgroundAnim.SetLooping(true);											// Scale to fit screen width - adjust divisor based on your animation's native size
+
 	Game game = Game();
 	string scoreText = "Score: ";
 	string nextText = "Next: ";
 	string gameOverText = "Game Over!";
+	string linesText = "Lines: ";
 	SplashScreen splash("resources/YoRu_n.gif", 10, 6.0f, 10.0f);
 	// Color dBlu = {44, 44, 127, 255};
 
@@ -41,6 +47,10 @@ int main()
 	{
 		static bool check = false;
 		float deltaTime = GetFrameTime();
+
+		// Update animation
+		backgroundAnim.Update(deltaTime);
+
 		// Update splash screen
 		if (splash.Update(deltaTime))
 		{
@@ -74,8 +84,18 @@ int main()
 		}
 		else if (check && !game.isGameOver)
 		{
-			UpdateMusicStream(game.music);
-			ClearBackground(dBlu);
+			UpdateMusicStream(game.music); // Draw animated background instead of solid color
+			if (!backgroundAnim.IsValid())
+			{
+				// Animation failed to load - draw a fallback color
+				DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), BLACK);
+			}
+			else
+			{
+				backgroundAnim.DrawFrame();
+				DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.5f));
+			}
+
 			// Draw the score in the top-right corner with a stylish design
 			int gridWidth, gridHeight;
 			game.grid.GetGridWidth(gridWidth, gridHeight);
@@ -115,6 +135,24 @@ int main()
 			string scoreValue = to_string(game.score);
 			Vector2 scoreValueSize = MeasureTextEx(font, scoreValue.c_str(), 64, 2);
 			DrawTextEx(font, scoreValue.c_str(), {scoreRect.x + (scoreRect.width - scoreValueSize.x) / 2, scoreRect.y + (scoreRect.height - scoreValueSize.y) / 2}, 64, 2, WHITE);
+			// Draw the lines cleared text
+			// Draw the lines cleared text
+			Rectangle linesRect = {scoreRect.x, nextRect.y + nextRect.height + 30.0f, scoreRect.width, scoreRect.height};
+			DrawRectangleRounded(linesRect, 0, 6, Fade(dGry, 0.5f));
+
+			// Draw the outline
+			Rectangle linesOutlineRect = {linesRect.x - 2, linesRect.y - 2, linesRect.width + 4, linesRect.height + 4};
+			DrawRectangleRoundedLines(linesOutlineRect, 0, 6, 3, Fade(dGry, 0.5f));
+
+			// Draw the "Lines" text
+			DrawTextEx(font, linesText.c_str(), {xPos, linesRect.y}, 64, 2, WHITE);
+
+			// Draw the lines count inside the rectangle
+			string linesClearedText = to_string(game.grid.rowCleared);
+			Vector2 linesClearedTextSize = MeasureTextEx(font, linesClearedText.c_str(), 64, 2);
+			DrawTextEx(font, linesClearedText.c_str(), {linesRect.x + (linesRect.width - linesClearedTextSize.x) / 2, linesRect.y + (linesRect.height - linesClearedTextSize.y) / 2}, 64, 2, WHITE);
+			// Draw the grid and the current block
+
 			game.Draw();
 			if (game.isGameOver)
 			{
@@ -123,7 +161,10 @@ int main()
 		}
 		else if (game.isGameOver)
 		{
-			ClearBackground(dBlu);
+			// Draw animated background with a darkened overlay
+			backgroundAnim.DrawFrame();																									 // Draw the animated background
+			DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.7f)); // Semi-transparent overlay
+
 			Vector2 gameOverTextSize = MeasureTextEx(font, gameOverText.c_str(), 100, 2);
 			DrawTextEx(font, gameOverText.c_str(), {(GetScreenWidth() - gameOverTextSize.x) / 2, (GetScreenHeight() - gameOverTextSize.y) / 2 - 40}, 100, 2, WHITE);
 
@@ -133,7 +174,10 @@ int main()
 		}
 		else
 		{
-			ClearBackground(BLACK);
+			// Draw animated background with a darkened overlay for the welcome screen
+			backgroundAnim.DrawFrame();																									 // Draw the animated background
+			DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.6f)); // Semi-transparent overlay
+
 			DrawText("Welcome to YoRutris!", GetScreenWidth() / 2 - MeasureText("Welcome to YoRutris!", 100) / 2, GetScreenHeight() / 2 - 80, 100, WHITE);
 			DrawText("Press ENTER to start", GetScreenWidth() / 2 - MeasureText("Press ENTER to start", 40) / 2, GetScreenHeight() / 2 + 40, 40, LIGHTGRAY);
 		}

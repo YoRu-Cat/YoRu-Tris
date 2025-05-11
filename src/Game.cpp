@@ -151,6 +151,11 @@ void Game::MoveBlockD()
   }
 }
 
+int Game::GetClearedLines()
+{
+  return grid.ClearFullRows(); // Return the number of cleared lines
+}
+
 bool Game::isBlockOut()
 {
   vector<Position> blockPositions = currentBlock.GetCurrentBlock();

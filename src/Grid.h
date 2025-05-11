@@ -24,4 +24,5 @@ public:
   int ClearFullRows();
   void GetGridWidth(int &width, int &height);
   int grid[30][30];
+  int rowCleared;
 };
